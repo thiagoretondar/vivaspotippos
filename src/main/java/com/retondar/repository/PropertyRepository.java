@@ -10,6 +10,6 @@ import org.springframework.data.mongodb.repository.Query;
 public interface PropertyRepository extends MongoRepository<PropertyDocument, Long> {
 
     @Query(value = "{ 'x': ?0, 'y' : ?1 }", count = true)
-    int findPropertyInPosition(int x, int y);
+    int getQuantityPropertyInPosition(int x, int y);
 
 }

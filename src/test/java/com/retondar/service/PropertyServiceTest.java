@@ -30,7 +30,7 @@ public class PropertyServiceTest {
         int posX = property.getPositionX();
         int posY = property.getPositionY();
 
-        when(propertyRepository.findPropertyInPosition(posX, posY)).thenReturn(1);
+        when(propertyRepository.getQuantityPropertyInPosition(posX, posY)).thenReturn(1);
 
         // WHEN
         propertyService.saveProperty(property);

@@ -1,6 +1,5 @@
 package com.retondar.service;
 
-import com.retondar.constant.Province;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.PositionAlreadyOccupiedException;
@@ -31,7 +30,7 @@ public class PropertyService {
         Integer positionX = propertyDto.getPositionX();
         Integer positionY = propertyDto.getPositionY();
 
-        int quantityProperty = propertyRepository.findPropertyInPosition(positionX, positionY);
+        int quantityProperty = propertyRepository.getQuantityPropertyInPosition(positionX, positionY);
 
         if (quantityProperty > 0) {
             throw new PositionAlreadyOccupiedException(String.format("Position (%d,%d) already occupied", positionX, positionY));
