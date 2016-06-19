@@ -14,7 +14,6 @@ public class PropertyDto implements Serializable {
 
     private static final long serialVersionUID = 7163410250242677783L;
 
-    @NotNull
     @JsonProperty("id")
     private Integer id;
 
