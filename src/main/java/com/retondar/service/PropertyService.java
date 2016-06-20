@@ -3,6 +3,7 @@ package com.retondar.service;
 import com.mongodb.MongoException;
 import com.retondar.converter.PropertyConverter;
 import com.retondar.dto.PropertyCreationDto;
+import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.repository.PropertyRepository;
@@ -26,7 +27,7 @@ public class PropertyService {
         this.propertyConverter = propertyConverter;
     }
 
-    public void saveProperty(PropertyCreationDto propertyCreationDto) throws PositionAlreadyOccupiedException, RepositoryException {
+    public PropertyDto saveProperty(PropertyCreationDto propertyCreationDto) throws PositionAlreadyOccupiedException, RepositoryException {
 
         Integer positionX = propertyCreationDto.getPositionX();
         Integer positionY = propertyCreationDto.getPositionY();
@@ -41,10 +42,11 @@ public class PropertyService {
 
         try {
             PropertyDocument insertedProperty = propertyRepository.insert(propertyDocument);
+
+            return propertyConverter.toDto(insertedProperty);
         } catch (MongoException e) {
             throw new RepositoryException("Error when trying to save the property");
         }
-
     }
 
 }

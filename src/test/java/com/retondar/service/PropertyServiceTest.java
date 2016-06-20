@@ -3,6 +3,7 @@ package com.retondar.service;
 import com.mongodb.MongoException;
 import com.retondar.converter.PropertyConverter;
 import com.retondar.dto.PropertyCreationDto;
+import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.repository.PropertyRepository;
@@ -15,7 +16,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.retondar.constant.Province.SCAVY;
 import static java.util.Arrays.asList;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by thiagoretondar on 18/06/16.
@@ -35,7 +37,7 @@ public class PropertyServiceTest {
     @Test(expected = PositionAlreadyOccupiedException.class)
     public void lancaExceptionPorquePosicaoDeImovelJaEstaOcupada() throws PositionAlreadyOccupiedException, RepositoryException {
         // GIVEN
-        PropertyCreationDto property = criarPropertyDto();
+        PropertyCreationDto property = criarPropertyCreationDto();
         int posX = property.getPositionX();
         int posY = property.getPositionY();
 
@@ -51,7 +53,7 @@ public class PropertyServiceTest {
     public void lancaExceptionPorqueNaoConseguiuSalvarNoBanco() throws PositionAlreadyOccupiedException, RepositoryException {
         // GIVEN
         PropertyDocument document = criarPropertyDocument();
-        PropertyCreationDto property = criarPropertyDto();
+        PropertyCreationDto property = criarPropertyCreationDto();
         int posX = property.getPositionX();
         int posY = property.getPositionY();
 
@@ -65,7 +67,30 @@ public class PropertyServiceTest {
         // THEN -- expects Exception
     }
 
-    private PropertyCreationDto criarPropertyDto() {
+    @Test
+    public void retornaDtoCompletoPorqueImovelFoiSalvoComSucesso() throws PositionAlreadyOccupiedException, RepositoryException {
+        // GIVEN
+        PropertyDocument document = criarPropertyDocument();
+        PropertyCreationDto property = criarPropertyCreationDto();
+        PropertyDocument insertedProperty = criarInsertedPropertyDocument();
+        PropertyDto resultProperty = criarPropertyDto();
+        int posX = property.getPositionX();
+        int posY = property.getPositionY();
+
+        when(propertyRepository.getQuantityPropertyInPosition(posX, posY)).thenReturn(0);
+        when(propertyConverter.toDocument(property)).thenReturn(document);
+        when(propertyRepository.insert(document)).thenReturn(insertedProperty);
+        when(propertyConverter.toDto(insertedProperty)).thenReturn(resultProperty);
+
+        // WHEN
+        PropertyDto result = propertyService.saveProperty(property);
+
+        // THEN
+        verify(propertyConverter, times(1)).toDto(insertedProperty);
+        assertEquals(result.getId(), resultProperty.getId());
+    }
+
+    private PropertyCreationDto criarPropertyCreationDto() {
         PropertyCreationDto dto = new PropertyCreationDto();
         dto.setPositionX(1);
         dto.setPositionY(1);
@@ -76,8 +101,34 @@ public class PropertyServiceTest {
         return dto;
     }
 
+    private PropertyDto criarPropertyDto() {
+        PropertyDto dto = new PropertyDto();
+        dto.setId("1a2b");
+        dto.setX(1);
+        dto.setY(1);
+        dto.setBeds(5);
+        dto.setBaths(4);
+        dto.setSquareMeters(240);
+        dto.setProvinces(asList(SCAVY));
+
+        return dto;
+    }
+
     private PropertyDocument criarPropertyDocument() {
         PropertyDocument document = new PropertyDocument();
+        document.setX(1);
+        document.setY(1);
+        document.setBeds(5);
+        document.setBaths(4);
+        document.setSquareMeters(240);
+        document.setProvinces(asList(SCAVY));
+
+        return document;
+    }
+
+    private PropertyDocument criarInsertedPropertyDocument() {
+        PropertyDocument document = new PropertyDocument();
+        document.setId("1a2b");
         document.setX(1);
         document.setY(1);
         document.setBeds(5);
