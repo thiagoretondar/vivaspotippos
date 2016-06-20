@@ -17,15 +17,15 @@ public enum Province {
 
     private String name;
     private int xa;
-    private int xb;
     private int ya;
+    private int xb;
     private int yb;
 
-    Province(String name, int xa, int xb, int ya, int yb) {
+    Province(String name, int xa, int ya, int xb, int yb) {
         this.name = name;
         this.xa = xa;
-        this.xb = xb;
         this.ya = ya;
+        this.xb = xb;
         this.yb = yb;
     }
 
@@ -33,12 +33,11 @@ public enum Province {
         return name;
     }
 
-    public List<Province> getProvincesByPosition(int x, int y) {
+    public static List<Province> getProvincesByPosition(int x, int y) {
         List<Province> provinces = new ArrayList<>();
-        for (Province province : values()) {
-            if (x >= province.xa && x <= province.xb &&
-                    y <= province.ya && y >= province.yb) {
-                provinces.add(province);
+        for (Province p : Province.values()) {
+            if (x >= p.xa && x <= p.xb && y <= p.ya && y >= p.yb) {
+                provinces.add(p);
             }
         }
 
