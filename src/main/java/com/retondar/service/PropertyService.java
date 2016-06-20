@@ -1,16 +1,14 @@
 package com.retondar.service;
 
-import com.retondar.dto.PropertyDto;
+import com.mongodb.MongoException;
+import com.retondar.converter.PropertyConverter;
+import com.retondar.dto.PropertyCreationDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.repository.PropertyRepository;
+import com.retondar.repository.RepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-
-import static com.retondar.constant.Province.GODE;
-import static com.retondar.constant.Province.GROOLA;
 
 /**
  * Created by thiagoretondar on 18/06/16.
@@ -20,15 +18,18 @@ public class PropertyService {
 
     private PropertyRepository propertyRepository;
 
+    private PropertyConverter propertyConverter;
+
     @Autowired
-    public PropertyService(final PropertyRepository propertyRepository) {
+    public PropertyService(final PropertyRepository propertyRepository, final PropertyConverter propertyConverter) {
         this.propertyRepository = propertyRepository;
+        this.propertyConverter = propertyConverter;
     }
 
-    public void saveProperty(PropertyDto propertyDto) throws PositionAlreadyOccupiedException {
+    public void saveProperty(PropertyCreationDto propertyCreationDto) throws PositionAlreadyOccupiedException, RepositoryException {
 
-        Integer positionX = propertyDto.getPositionX();
-        Integer positionY = propertyDto.getPositionY();
+        Integer positionX = propertyCreationDto.getPositionX();
+        Integer positionY = propertyCreationDto.getPositionY();
 
         int quantityProperty = propertyRepository.getQuantityPropertyInPosition(positionX, positionY);
 
@@ -36,15 +37,13 @@ public class PropertyService {
             throw new PositionAlreadyOccupiedException(String.format("Position (%d,%d) already occupied", positionX, positionY));
         }
 
-        PropertyDocument property = new PropertyDocument();
-        property.setBaths(4);
-        property.setBeds(5);
-        property.setProvinces(Arrays.asList(GODE, GROOLA));
-        property.setSquareMeters(230);
-        property.setX(positionX);
-        property.setY(positionY);
+        PropertyDocument propertyDocument = propertyConverter.toDocument(propertyCreationDto);
 
-        propertyRepository.insert(property);
+        try {
+            PropertyDocument insertedProperty = propertyRepository.insert(propertyDocument);
+        } catch (MongoException e) {
+            throw new RepositoryException("Error when trying to save the property");
+        }
 
     }
 

@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class PositionAlreadyOccupiedException extends Exception {
 
-    public PositionAlreadyOccupiedException() {
-
-    }
-
     public PositionAlreadyOccupiedException(String message) {
         super(message);
     }
+
 }

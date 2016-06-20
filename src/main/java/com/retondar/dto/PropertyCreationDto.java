@@ -10,12 +10,9 @@ import java.io.Serializable;
 /**
  * Created by thiagoretondar on 18/06/16.
  */
-public class PropertyDto implements Serializable {
+public class PropertyCreationDto implements Serializable {
 
     private static final long serialVersionUID = 7163410250242677783L;
-
-    @JsonProperty("id")
-    private Integer id;
 
     @NotNull(message = "Position x cannot be null")
     @Max(value = 1400, message = "Position x maximum is 1400")
@@ -46,14 +43,6 @@ public class PropertyDto implements Serializable {
     @Min(value = 20, message = "Square meters minimum values is 20")
     @JsonProperty("squareMeters")
     private Integer squareMeters;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getPositionX() {
         return positionX;
