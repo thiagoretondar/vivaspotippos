@@ -2,6 +2,7 @@ package com.retondar.service;
 
 import com.mongodb.MongoException;
 import com.retondar.converter.PropertyConverter;
+import com.retondar.dto.ListPropertiesDto;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
@@ -13,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Created by thiagoretondar on 18/06/16.
@@ -67,4 +70,22 @@ public class PropertyService {
 
         return propertyConverter.toDto(propertyDocument);
     }
+
+    public ListPropertiesDto getListPropertiesByArea(int xa, int ya, int xb, int yb) {
+
+        List<PropertyDto> resultProperties = new ArrayList<>();
+        int quantity = 0;
+
+        List<PropertyDocument> propertiesInArea = propertyRepository.findByArea(xa, ya, xb, yb);
+
+        if (nonNull(propertiesInArea)) {
+            for (PropertyDocument propertyDocument : propertiesInArea) {
+                resultProperties.add(propertyConverter.toDto(propertyDocument));
+            }
+            quantity = propertiesInArea.size();
+        }
+
+        return new ListPropertiesDto(quantity, resultProperties);
+    }
+
 }

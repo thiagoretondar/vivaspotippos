@@ -2,19 +2,21 @@ package com.retondar.service;
 
 import com.mongodb.MongoException;
 import com.retondar.converter.PropertyConverter;
+import com.retondar.dto.ListPropertiesDto;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.NotFoundProperty;
 import com.retondar.exception.PositionAlreadyOccupiedException;
-import com.retondar.repository.PropertyRepository;
 import com.retondar.exception.RepositoryException;
-import org.junit.Assert;
+import com.retondar.repository.PropertyRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
 
 import static com.retondar.constant.Province.SCAVY;
 import static java.util.Arrays.asList;
@@ -144,6 +146,39 @@ public class PropertyServiceTest {
 
         // THEN -- expects Exception
 
+    }
+
+    @Test
+    public void retornaListaDeImoveisQuandoEncontrarAlgumImovel() {
+        // GIVEN
+        int xa = 0, ya = 1000, xb = 600, yb = 500; // província Gode
+
+        PropertyDocument foundProperty = criarInsertedPropertyDocument();
+        PropertyDto resultProperty = criarPropertyDto();
+
+        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(Arrays.asList(foundProperty));
+        when(propertyConverter.toDto(foundProperty)).thenReturn(resultProperty);
+
+        // WHEN
+        ListPropertiesDto listPropertiesByArea = propertyService.getListPropertiesByArea(xa, ya, xb, yb);
+
+        // THEN
+        assertEquals(1, listPropertiesByArea.getFoundProperties());
+        assertEquals(1, listPropertiesByArea.getProperties().size());
+    }
+
+    @Test
+    public void retornaListaVaziaQuandoNaoEncontrarImoveis() {
+        // GIVEN
+        int xa = 0, ya = 1000, xb = 600, yb = 500;
+
+        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(null);
+        // WHEN
+        ListPropertiesDto listPropertiesByArea = propertyService.getListPropertiesByArea(xa, ya, xb, yb);
+
+        // THEN
+        assertEquals(0, listPropertiesByArea.getFoundProperties());
+        assertEquals(0, listPropertiesByArea.getProperties().size());
     }
 
     private PropertyCreationDto criarPropertyCreationDto() {

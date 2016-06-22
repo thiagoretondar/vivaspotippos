@@ -1,5 +1,6 @@
 package com.retondar.controller;
 
+import com.retondar.dto.ListPropertiesDto;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.exception.NotFoundProperty;
@@ -7,10 +8,7 @@ import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.exception.RepositoryException;
 import com.retondar.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -42,6 +40,12 @@ public class PropertyController {
     public PropertyDto getById(@PathVariable("id") String id) throws NotFoundProperty {
 
         return propertyService.getById(id);
+    }
+
+    @RequestMapping(method = GET)
+    public ListPropertiesDto getByArea(@RequestParam("ax") int xa, @RequestParam("ay") int ya, @RequestParam("bx") int xb, @RequestParam("by") int yb) {
+
+        return propertyService.getListPropertiesByArea(xa, ya, xb, yb);
     }
 
 }
