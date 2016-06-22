@@ -5,11 +5,17 @@ import com.retondar.converter.PropertyConverter;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
+import com.retondar.exception.NotFoundProperty;
 import com.retondar.exception.PositionAlreadyOccupiedException;
-import com.retondar.repository.PropertyRepository;
 import com.retondar.exception.RepositoryException;
+import com.retondar.repository.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 /**
  * Created by thiagoretondar on 18/06/16.
@@ -49,4 +55,16 @@ public class PropertyService {
         }
     }
 
+    public PropertyDto getById(String id) throws NotFoundProperty {
+
+        Assert.hasText(id);
+
+        PropertyDocument propertyDocument = propertyRepository.findOne(id);
+
+        if (isNull(propertyDocument)) {
+            throw new NotFoundProperty(String.format("No property was found with id=%s", id));
+        }
+
+        return propertyConverter.toDto(propertyDocument);
+    }
 }

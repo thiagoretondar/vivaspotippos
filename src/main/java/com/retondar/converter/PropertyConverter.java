@@ -34,6 +34,7 @@ public class PropertyConverter {
         dto.setY(document.getY());
         dto.setBeds(document.getBeds());
         dto.setBaths(document.getBaths());
+        dto.setSquareMeters(document.getSquareMeters());
         dto.setProvinces(document.getProvinces());
 
         return dto;

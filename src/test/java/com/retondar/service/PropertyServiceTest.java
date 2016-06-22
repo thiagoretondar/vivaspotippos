@@ -5,9 +5,11 @@ import com.retondar.converter.PropertyConverter;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
+import com.retondar.exception.NotFoundProperty;
 import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.repository.PropertyRepository;
 import com.retondar.exception.RepositoryException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static com.retondar.constant.Province.SCAVY;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -88,6 +91,59 @@ public class PropertyServiceTest {
         // THEN
         verify(propertyConverter, times(1)).toDto(insertedProperty);
         assertEquals(result.getId(), resultProperty.getId());
+    }
+
+    @Test
+    public void retornarDtoDoImovelQuandoEncontrarImovelNaBuscaPorId() throws NotFoundProperty {
+        // GIVEN
+        String id = "1a2b";
+        PropertyDocument foundProperty = criarInsertedPropertyDocument();
+        PropertyDto resultProperty = criarPropertyDto();
+
+        when(propertyRepository.findOne(id)).thenReturn(foundProperty);
+        when(propertyConverter.toDto(foundProperty)).thenReturn(resultProperty);
+
+        // WHEN
+        PropertyDto propertyResult = propertyService.getById(id);
+
+        // THEN
+        assertNotNull(propertyResult);
+    }
+
+    @Test(expected = NotFoundProperty.class)
+    public void lancaExcecaoQuandoNaoEncontrarImovelNaBuscaPorId() throws NotFoundProperty {
+        // GIVEN
+        String id = "1a2b";
+
+        when(propertyRepository.findOne(id)).thenReturn(null);
+
+        // WHEN
+        propertyService.getById(id);
+
+        // THEN -- expects Exception
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void lancaExcecaoPorqueIdPassadoEhVazio() throws NotFoundProperty {
+        // GIVEN
+        String id = "";
+
+        // WHEN
+        propertyService.getById(id);
+
+        // THEN -- expects Exception
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void lancaExcecaoPorqueIdPassadoEhNulo() throws NotFoundProperty {
+        // GIVEN
+        String id = null;
+
+        // WHEN
+        propertyService.getById(id);
+
+        // THEN -- expects Exception
+
     }
 
     private PropertyCreationDto criarPropertyCreationDto() {
