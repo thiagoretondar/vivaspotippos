@@ -3,7 +3,7 @@ package com.retondar.controller;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.exception.PositionAlreadyOccupiedException;
-import com.retondar.repository.RepositoryException;
+import com.retondar.exception.RepositoryException;
 import com.retondar.service.PropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

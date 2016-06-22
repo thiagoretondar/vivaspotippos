@@ -7,7 +7,7 @@ import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
 import com.retondar.exception.PositionAlreadyOccupiedException;
 import com.retondar.repository.PropertyRepository;
-import com.retondar.repository.RepositoryException;
+import com.retondar.exception.RepositoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
