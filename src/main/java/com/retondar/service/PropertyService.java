@@ -16,9 +16,8 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Created by thiagoretondar on 18/06/16.
@@ -62,30 +61,24 @@ public class PropertyService {
 
         Assert.hasText(id);
 
-        PropertyDocument propertyDocument = propertyRepository.findOne(id);
+        Optional<PropertyDocument> property = Optional.ofNullable(propertyRepository.findOne(id));
 
-        if (isNull(propertyDocument)) {
-            throw new NotFoundProperty(String.format("No property was found with id=%s", id));
-        }
-
-        return propertyConverter.toDto(propertyDocument);
+        return property
+                .map(propertyConverter::toDto)
+                .orElseThrow(() -> new NotFoundProperty(String.format("No property was found with id=%s", id)));
     }
 
     public ListPropertiesDto getListPropertiesByArea(int xa, int ya, int xb, int yb) {
 
         List<PropertyDto> resultProperties = new ArrayList<>();
-        int quantity = 0;
 
-        List<PropertyDocument> propertiesInArea = propertyRepository.findByArea(xa, ya, xb, yb);
+        Stream<PropertyDocument> propertiesInArea = propertyRepository.findByArea(xa, ya, xb, yb);
 
-        if (nonNull(propertiesInArea)) {
-            for (PropertyDocument propertyDocument : propertiesInArea) {
-                resultProperties.add(propertyConverter.toDto(propertyDocument));
-            }
-            quantity = propertiesInArea.size();
-        }
+        propertiesInArea
+                .map(propertyConverter::toDto)
+                .forEach(propertyDto -> resultProperties.add(propertyDto));
 
-        return new ListPropertiesDto(quantity, resultProperties);
+        return new ListPropertiesDto(resultProperties.size(), resultProperties);
     }
 
 }

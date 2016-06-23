@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static com.retondar.constant.Province.SCAVY;
 import static java.util.Arrays.asList;
@@ -155,8 +155,9 @@ public class PropertyServiceTest {
 
         PropertyDocument foundProperty = criarInsertedPropertyDocument();
         PropertyDto resultProperty = criarPropertyDto();
+        Stream<PropertyDocument> foundPropertyStream = Stream.of(foundProperty);
 
-        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(Arrays.asList(foundProperty));
+        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(foundPropertyStream);
         when(propertyConverter.toDto(foundProperty)).thenReturn(resultProperty);
 
         // WHEN
@@ -172,7 +173,7 @@ public class PropertyServiceTest {
         // GIVEN
         int xa = 0, ya = 1000, xb = 600, yb = 500;
 
-        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(null);
+        when(propertyRepository.findByArea(xa, ya, xb, yb)).thenReturn(Stream.empty());
         // WHEN
         ListPropertiesDto listPropertiesByArea = propertyService.getListPropertiesByArea(xa, ya, xb, yb);
 
