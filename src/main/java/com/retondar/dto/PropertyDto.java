@@ -1,7 +1,5 @@
 package com.retondar.dto;
 
-import com.retondar.constant.Province;
-
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ public class PropertyDto {
 
     private Integer squareMeters;
 
-    private List<Province> provinces;
+    private List<String> provinces;
 
     public String getId() {
         return id;
@@ -71,11 +69,11 @@ public class PropertyDto {
         this.squareMeters = squareMeters;
     }
 
-    public List<Province> getProvinces() {
+    public List<String> getProvinces() {
         return provinces;
     }
 
-    public void setProvinces(List<Province> provinces) {
+    public void setProvinces(List<String> provinces) {
         this.provinces = provinces;
     }
 }

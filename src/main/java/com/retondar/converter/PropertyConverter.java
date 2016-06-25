@@ -1,16 +1,29 @@
 package com.retondar.converter;
 
-import com.retondar.constant.Province;
 import com.retondar.dto.PropertyCreationDto;
 import com.retondar.dto.PropertyDto;
 import com.retondar.entity.PropertyDocument;
+import com.retondar.entity.ProvinceDocument;
+import com.retondar.repository.ProvinceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by thiagoretondar on 19/06/16.
  */
 @Component
 public class PropertyConverter {
+
+    private ProvinceRepository provinceRepository;
+
+    @Autowired
+    public PropertyConverter(final ProvinceRepository provinceRepository) {
+        this.provinceRepository = provinceRepository;
+    }
 
     // TODO maybe put in another converter, because its Property*Converter*Dto
     public PropertyDocument toDocument(PropertyCreationDto dto) {
@@ -21,7 +34,7 @@ public class PropertyConverter {
         document.setBeds(dto.getAmountBeds());
         document.setBaths(dto.getAmountBaths());
         document.setSquareMeters(dto.getSquareMeters());
-        document.setProvinces(Province.getProvincesByPosition(dto.getPositionX(), dto.getPositionY())); // TODO refactor this (get this info from database?)
+        document.setProvinces(getProvincesByPosition(dto));
 
         return document;
     }
@@ -38,5 +51,14 @@ public class PropertyConverter {
         dto.setProvinces(document.getProvinces());
 
         return dto;
+    }
+
+    private List<String> getProvincesByPosition(PropertyCreationDto dto) {
+
+        Stream<ProvinceDocument> provincesByPosition = provinceRepository.findProvincesByPosition(dto.getPositionX(), dto.getPositionY());
+
+        return provincesByPosition
+                .map(ProvinceDocument::getProvinceName)
+                .collect(Collectors.toList());
     }
 }

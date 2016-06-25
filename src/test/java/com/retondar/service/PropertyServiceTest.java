@@ -18,7 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.stream.Stream;
 
-import static com.retondar.constant.Province.SCAVY;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -201,7 +200,7 @@ public class PropertyServiceTest {
         dto.setBeds(5);
         dto.setBaths(4);
         dto.setSquareMeters(240);
-        dto.setProvinces(asList(SCAVY));
+        dto.setProvinces(asList("Scavy"));
 
         return dto;
     }
@@ -213,7 +212,7 @@ public class PropertyServiceTest {
         document.setBeds(5);
         document.setBaths(4);
         document.setSquareMeters(240);
-        document.setProvinces(asList(SCAVY));
+        document.setProvinces(asList("Scavy"));
 
         return document;
     }
@@ -226,7 +225,7 @@ public class PropertyServiceTest {
         document.setBeds(5);
         document.setBaths(4);
         document.setSquareMeters(240);
-        document.setProvinces(asList(SCAVY));
+        document.setProvinces(asList("Scavy"));
 
         return document;
     }

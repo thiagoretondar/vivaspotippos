@@ -1,6 +1,5 @@
 package com.retondar.entity;
 
-import com.retondar.constant.Province;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,8 +24,7 @@ public class PropertyDocument {
 
     private Integer squareMeters;
 
-    private List<Province> provinces;
-
+    private List<String> provinces;
 
     public String getId() {
         return id;
@@ -76,11 +74,11 @@ public class PropertyDocument {
         this.squareMeters = squareMeters;
     }
 
-    public List<Province> getProvinces() {
+    public List<String> getProvinces() {
         return provinces;
     }
 
-    public void setProvinces(List<Province> provinces) {
+    public void setProvinces(List<String> provinces) {
         this.provinces = provinces;
     }
 }
