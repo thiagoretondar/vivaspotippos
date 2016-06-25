@@ -37,14 +37,7 @@ public class PropertyService {
 
     public PropertyDto saveProperty(PropertyCreationDto propertyCreationDto) throws PositionAlreadyOccupiedException, RepositoryException {
 
-        Integer positionX = propertyCreationDto.getPositionX();
-        Integer positionY = propertyCreationDto.getPositionY();
-
-        int quantityProperty = propertyRepository.getQuantityPropertyInPosition(positionX, positionY);
-
-        if (quantityProperty > 0) {
-            throw new PositionAlreadyOccupiedException(String.format("Position (%d,%d) already occupied", positionX, positionY));
-        }
+        verifyItsNotOccupied(propertyCreationDto);
 
         PropertyDocument propertyDocument = propertyConverter.toDocument(propertyCreationDto);
 
@@ -79,6 +72,18 @@ public class PropertyService {
                 .forEach(propertyDto -> resultProperties.add(propertyDto));
 
         return new ListPropertiesDto(resultProperties.size(), resultProperties);
+    }
+
+    private void verifyItsNotOccupied(PropertyCreationDto propertyCreationDto) throws PositionAlreadyOccupiedException {
+
+        Integer positionX = propertyCreationDto.getPositionX();
+        Integer positionY = propertyCreationDto.getPositionY();
+
+        int quantityProperty = propertyRepository.getQuantityPropertyInPosition(positionX, positionY);
+
+        if (quantityProperty > 0) {
+            throw new PositionAlreadyOccupiedException(String.format("Position (%d,%d) already occupied", positionX, positionY));
+        }
     }
 
 }
