@@ -1,7 +1,5 @@
 package com.retondar.dto;
 
-import com.retondar.entity.PropertyDocument;
-
 import java.io.Serializable;
 import java.util.List;
 
